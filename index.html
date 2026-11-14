@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="BOSUN 캡스톤 프로젝트에서 WEB(채팅 화면과 백엔드)을 맡은 김진영의 포트폴리오">
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>BOSUN WEB 포트폴리오</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: 컨테이너 측면 스텐실처럼 굵은 표제 + 한 줄 본문 칼럼, 신호색(승인=호박색, 차단=빨강)은 앱 화면의 의미 그대로만 쓴다 */
+:root {
+  --bg: #eef2f4;
+  --surface: #ffffff;
+  --ink: #13222c;
+  --muted: #566771;
+  --line: #d3dce1;
+  --sea: #0e5466;
+  --sea-soft: #dcebef;
+  --signal: #b87300;
+  --signal-soft: #fdf3dc;
+  --stop: #b8352a;
+  --stop-soft: #fbe6e3;
+  --ok: #2d7a4b;
+  --ok-soft: #e1f1e6;
+  --shot-frame: #ffffff;
+  --display: "Black Han Sans", "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b141a; --surface: #12202a; --ink: #e4ecef; --muted: #93a5af; --line: #253844;
+    --sea: #6cbccd; --sea-soft: #15313a; --signal: #f0aa36; --signal-soft: #33270f;
+    --stop: #f07a6c; --stop-soft: #3a1c19; --ok: #6fca93; --ok-soft: #15301f; --shot-frame: #1a2c37;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b141a; --surface: #12202a; --ink: #e4ecef; --muted: #93a5af; --line: #253844;
+  --sea: #6cbccd; --sea-soft: #15313a; --signal: #f0aa36; --signal-soft: #33270f;
+  --stop: #f07a6c; --stop-soft: #3a1c19; --ok: #6fca93; --ok-soft: #15301f; --shot-frame: #1a2c37;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.75;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+.wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--sea); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--sea); outline-offset: 2px; }
+code, .mono { font-family: var(--mono); font-size: 0.88em; }
+code { background: var(--sea-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(1.7rem, 3.4vw, 2.3rem);
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+}
+h3 { font-size: 1.12rem; font-weight: 700; line-height: 1.45; }
+p { margin: 0; }
+.prose { max-width: 66ch; display: grid; gap: 0.9em; }
+.muted { color: var(--muted); }
+
+/* 컨테이너 표기처럼 쓰는 라벨: 실제 날짜·버전만 넣는다 */
+.tag {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---------- hero ---------- */
+.hero { padding-block: 56px 40px; border-bottom: 1px solid var(--line); }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 48px; align-items: center; }
+.hero h1 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(3.2rem, 9vw, 6.2rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  margin-top: 14px;
+}
+.hero h1 span { color: var(--sea); }
+.lede { font-size: 1.2rem; line-height: 1.6; margin-top: 20px; max-width: 30ch; font-weight: 500; }
+.lede em { font-style: normal; color: var(--signal); }
+.who { margin-top: 22px; display: grid; gap: 4px; font-size: 0.95rem; }
+.who b { font-weight: 600; }
+.figures {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 2px solid var(--ink);
+}
+.figures div { padding: 12px 10px 0 0; }
+.figures strong { display: block; font-family: var(--mono); font-size: 1.55rem; font-weight: 500; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.figures span { font-size: 0.8rem; color: var(--muted); line-height: 1.4; display: block; margin-top: 2px; }
+
+.screen {
+  background: var(--shot-frame);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 18px 40px -24px rgba(10, 30, 40, 0.45);
+}
+.screen-bar { display: flex; gap: 6px; padding: 9px 12px; border-bottom: 1px solid var(--line); align-items: center; }
+.screen-bar i { width: 9px; height: 9px; border-radius: 50%; background: var(--line); display: block; }
+.screen-bar span { margin-left: 8px; font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+.screen img { display: block; width: 100%; height: auto; }
+figure { margin: 0; }
+figcaption { font-size: 0.85rem; color: var(--muted); margin-top: 10px; line-height: 1.55; }
+
+/* ---------- sections ---------- */
+section { padding-block: 64px; border-bottom: 1px solid var(--line); }
+.sec-head { display: grid; gap: 10px; margin-bottom: 32px; }
+
+/* 구조도 */
+.flow { overflow-x: auto; margin-top: 28px; }
+.flow-row { display: flex; align-items: stretch; gap: 0; min-width: 760px; }
+.node {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  flex: 1 1 0;
+  min-width: 0;
+}
+.node b { display: block; font-size: 0.95rem; }
+.node small { color: var(--muted); font-size: 0.78rem; display: block; margin-top: 3px; }
+.arrow { flex: 0 0 34px; display: grid; place-items: center; color: var(--muted); font-family: var(--mono); }
+.mine { flex: 2.3 1 0; border: 2px solid var(--sea); border-radius: 12px; padding: 8px; display: flex; gap: 0; position: relative; background: var(--sea-soft); }
+.mine .node { border-color: transparent; }
+.mine-label { position: absolute; top: -11px; left: 12px; background: var(--sea); color: var(--bg); font-size: 0.72rem; font-weight: 600; padding: 1px 8px; border-radius: 4px; }
+.policy-node { border-color: var(--signal); }
+
+.roles { margin-top: 24px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; font-size: 0.9rem; }
+.roles div { border-top: 2px solid var(--line); padding-top: 8px; }
+.roles .me { border-top-color: var(--sea); }
+.roles b { display: block; }
+
+/* 한 일 */
+.work { display: grid; gap: 56px; }
+.work-item { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+.work-item.flip > :first-child { order: 2; }
+.work-item ul { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; }
+.work-item li::marker { color: var(--sea); }
+.work-body { display: grid; gap: 14px; min-width: 0; }
+.kicker { font-size: 0.82rem; font-weight: 600; color: var(--sea); }
+
+/* 확인한 사실 표기 */
+.fact {
+  border-left: 3px solid var(--sea);
+  background: var(--surface);
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  border-radius: 0 6px 6px 0;
+}
+
+/* 트러블슈팅 */
+.issues { display: grid; gap: 20px; }
+.issue { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 22px 24px; display: grid; gap: 12px; }
+.issue dl { margin: 0; display: grid; grid-template-columns: 4.5em minmax(0, 1fr); gap: 6px 14px; font-size: 0.95rem; }
+.issue dt { color: var(--muted); font-weight: 600; font-size: 0.85rem; padding-top: 2px; }
+.issue dd { margin: 0; }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 680px; font-size: 0.9rem; line-height: 1.55; }
+th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+th { font-size: 0.78rem; color: var(--muted); font-weight: 600; letter-spacing: 0.04em; }
+tr:last-child td { border-bottom: 0; }
+.pill { display: inline-block; font-size: 0.75rem; font-weight: 600; padding: 1px 8px; border-radius: 999px; white-space: nowrap; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); }
+.pill.open { background: var(--signal-soft); color: var(--signal); }
+
+/* 타임라인 */
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.timeline li { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); gap: 18px; padding: 14px 0; border-top: 1px solid var(--line); }
+.timeline time { font-family: var(--mono); font-size: 0.85rem; color: var(--muted); padding-top: 2px; font-variant-numeric: tabular-nums; }
+.timeline b { font-weight: 600; }
+.timeline .next time { color: var(--signal); }
+
+/* 갤러리 */
+.gallery { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.gallery .mobile { max-width: 300px; }
+
+/* 테스트 */
+.checks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.check { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; display: grid; gap: 6px; align-content: start; }
+.check h3 + p { margin-top: 2px; }
+.shots-3 { margin-top: 32px; display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.shots-3 figure { min-width: 0; }
+@media print { .issue, .check, figure, .decision, .timeline li, .stack div, tr { break-inside: avoid; } }
+@media (max-width: 860px) { .shots-3 { grid-template-columns: minmax(0, 1fr); } .shots-3 figure:first-child { max-width: 360px; } }
+.check strong { font-family: var(--mono); font-size: 1.8rem; font-weight: 500; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.check p { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+
+/* 스택 */
+.stack { display: grid; gap: 0; }
+.stack div { display: grid; grid-template-columns: 9em minmax(0, 1fr) minmax(0, 1.3fr); gap: 18px; padding: 14px 0; border-top: 1px solid var(--line); font-size: 0.93rem; line-height: 1.6; }
+.stack b { font-weight: 600; }
+.stack .why { color: var(--muted); }
+
+footer { padding-block: 40px 64px; font-size: 0.88rem; color: var(--muted); }
+
+@media (max-width: 860px) {
+  .hero-grid, .work-item, .gallery { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .work-item.flip > :first-child { order: 0; }
+  .checks { grid-template-columns: minmax(0, 1fr); }
+  .roles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stack div { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+}
+@media (max-width: 520px) {
+  .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 14px; }
+  .timeline li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .issue { padding: 18px 16px; }
+  .issue dl { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .issue dd { margin-bottom: 8px; }
+  section { padding-block: 48px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero h1 { animation: rise 0.6s ease-out both; }
+  @keyframes rise { from { transform: translateY(8px); opacity: 0.4; } to { transform: none; opacity: 1; } }
+}
+</style>
+<style>
+/* 설계 결정 목록: 결정 / 이유 두 칸 */
+.decisions { display: grid; gap: 0; }
+.decision { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr); gap: 28px; padding: 22px 0; border-top: 1px solid var(--line); }
+.decision h3 { font-size: 1.05rem; }
+.decision .src { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); margin-top: 6px; display: block; line-height: 1.5; }
+.decision p { font-size: 0.95rem; }
+.decision p + p { margin-top: 8px; }
+@media (max-width: 860px) { .decision { grid-template-columns: minmax(0, 1fr); gap: 8px; } }
+</style>
+<style>html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0}img{max-width:100%;height:auto}</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="tag">Capstone · 2026.09.24 — 진행 중</div>
+      <h1>BOSUN<br><span>WEB</span></h1>
+      <p class="lede">AI 에이전트가 Docker를 바꾸기 전에 <em>사람이 보고 승인하는</em> 채팅 화면</p>
+      <div class="who">
+        <div><b>김진영</b> · 컴퓨터공학과 4학년</div>
+        <div>4인 캡스톤 BOSUN에서 WEB(채팅 화면 + WEB 백엔드)을 혼자 설계하고 만들었습니다.</div>
+        <div class="muted">최종 발표 2026.11.27 · WEB 0.9.0 · <a href="https://github.com/bosun-agent/bosun-agent">github.com/bosun-agent/bosun-agent</a></div>
+      </div>
+      <div class="figures">
+        <div><strong>94</strong><span>내 커밋</span></div>
+        <div><strong>153</strong><span>백엔드 흐름 검사</span></div>
+        <div><strong>81</strong><span>브라우저 화면 검사</span></div>
+        <div><strong>12</strong><span>Agent 실행 관리 검사</span></div>
+      </div>
+    </div>
+    <figure>
+      <div class="screen">
+        <div class="screen-bar"><i></i><i></i><i></i><span>“nginx 삭제해줘”</span></div>
+        <img src="img/full.png" width="1280" height="860" alt="BOSUN 채팅 화면. 'nginx 삭제해줘' 요청에 '컨테이너 nginx-web 삭제' 승인 카드가 '되돌릴 수 없음' 표시, 5:00 남음, 거부·승인 버튼과 함께 떠 있다.">
+      </div>
+      <figcaption>삭제 도구가 실행되기 직전에 Agent가 멈추고, WEB이 이 카드를 띄웁니다. 승인을 누르기 전에는 아무것도 지워지지 않습니다.</figcaption>
+    </figure>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="tag">Overview</div>
+        <h2>말로 컨테이너를 관리하되, 실행은 사람이 정한다</h2>
+      </div>
+      <div class="prose">
+        <p>BOSUN은 “web 컨테이너 재시작해줘” 같은 자연어로 Docker를 관리하는 서비스입니다. LLM이 어떤 도구를 쓸지 정하고, Docker Agent가 Portainer를 거쳐 Docker를 조작합니다.</p>
+        <p>팀이 처음에 정한 원칙은 이렇습니다. <b>“LLM은 계획과 명령 파라미터만 만들고, 실제 실행 여부는 코드(정책)와 사용자 승인이 정한다.”</b> 정책은 Agent 안에 있고, 승인은 WEB에서 받습니다. 그래서 WEB은 정책이 “물어봐야 한다”고 판정한 호출을 사람이 읽을 수 있는 카드로 보여 주고, 사람의 결정을 Agent에 정확히 한 번 전달하는 역할을 맡습니다.</p>
+      </div>
+
+      <div class="flow" role="img" aria-label="구조: 사용자, 채팅 화면과 WEB 백엔드(내 담당), Docker Agent와 정책, Portainer MCP, Docker 순서로 이어진다.">
+        <div class="flow-row">
+          <div class="node"><b>사용자</b><small>브라우저</small></div>
+          <div class="arrow">→</div>
+          <div class="mine">
+            <span class="mine-label">내 담당</span>
+            <div class="node"><b>채팅 화면</b><small>React 19 · TypeScript</small></div>
+            <div class="arrow">⇄</div>
+            <div class="node"><b>WEB 백엔드</b><small>Node · Hono · SQLite<br>스트림 중계 · 승인 · Agent 실행 관리</small></div>
+          </div>
+          <div class="arrow">⇄</div>
+          <div class="node policy-node"><b>Docker Agent</b><small>LLM 호출 + 정책<br>(safety · permissions · 훅)</small></div>
+          <div class="arrow">→</div>
+          <div class="node"><b>Portainer</b><small>MCP</small></div>
+          <div class="arrow">→</div>
+          <div class="node"><b>Docker</b></div>
+        </div>
+      </div>
+
+      <div class="roles">
+        <div class="me"><b>WEB</b>김진영 · 화면 + 백엔드</div>
+        <div><b>AI Agent</b>팀원 · agent.yaml, 훅</div>
+        <div><b>Secure</b>팀원 · 정책표</div>
+        <div><b>Portainer</b>팀원 · MCP 연동</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="tag">Design decisions</div>
+        <h2>Agent 소스를 읽고 정한 것들</h2>
+        <p class="muted" style="max-width:66ch">Docker Agent API 문서만으로는 승인 흐름의 빈 곳이 보이지 않았습니다. docker-agent 소스(v1.145.0, v1.148.0)를 읽고 확인한 사실마다 파일 이름을 계약서에 근거로 남겼습니다.</p>
+      </div>
+
+      <div class="decisions">
+        <div class="decision">
+          <div>
+            <h3>브라우저는 WEB 백엔드하고만 통신한다</h3>
+            <span class="src">설계서 1장</span>
+          </div>
+          <div>
+            <p>Docker Agent API에는 승인 절차를 끄거나 바꾸는 엔드포인트(<code>approve-autonomous</code>, <code>safety-policy</code>, <code>permissions</code> 등)가 있습니다. Agent 스트림의 도구 인자에는 가리지 않은 비밀값도 들어 있습니다. 둘 다 브라우저에 열어 두면 안 되므로 WEB 백엔드(BFF)를 두었습니다.</p>
+          </div>
+        </div>
+        <div class="decision">
+          <div>
+            <h3>승인 상태와 만료는 WEB이 들고 있는다</h3>
+            <span class="src">runtime.go Resume · 계약 5장</span>
+          </div>
+          <div>
+            <p>Agent의 <code>/resume</code>에는 도구 호출 ID가 없고, 기다리는 건이 없어도 200을 주고 결정을 버립니다. Agent는 승인을 무기한 기다립니다.</p>
+            <p>그래서 WEB이 카드마다 approvalId를 발급하고, 한 번 처리했거나 만료된 카드에는 409를 돌려줍니다. 5분이 지나면 브라우저가 없어도 백엔드가 직접 거부를 보냅니다. 누가 언제 승인했는지도 Agent에는 남지 않아서 WEB이 감사 기록으로 남깁니다.</p>
+          </div>
+        </div>
+        <div class="decision">
+          <div>
+            <h3>결정은 approve와 reject만 보낸다</h3>
+            <span class="src">session_manager.go ResumeSession</span>
+          </div>
+          <div>
+            <p><code>approve-tool</code>이나 <code>approve-autonomous</code>는 세션 권한을 넓혀서 그 뒤 호출을 묻지 않고 실행합니다. 카드 한 장의 승인이 이후 호출까지 열면 안 되므로 쓰지 않습니다. 같은 이유로 세션 권한 API도 막았습니다. 세션 규칙이 agent.yaml보다 먼저 적용돼 정책의 거부 규칙까지 뚫기 때문입니다.</p>
+          </div>
+        </div>
+        <div class="decision">
+          <div>
+            <h3>승인 카드는 LLM이 아니라 코드 템플릿이 쓴다</h3>
+            <span class="src">server/tools.ts · 계약 6장</span>
+          </div>
+          <div>
+            <p>Agent의 승인 요청에는 대상, 위험도, 설명이 없습니다. LLM에게 요약을 맡기면 승인할 내용을 LLM이 다시 쓰게 됩니다. 그래서 도구 요청(<code>DELETE /containers/nginx-web</code> 같은 method·path·본문)을 표에 맞춰 카드로 바꿉니다.</p>
+            <p>컨테이너 생성은 본문에서 이미지, 명령, 포트, 마운트, privileged, 호스트 공유를 꺼내 보여 줍니다. 10월 11일 실제 모델이 생성 명령에 셸 명령을 넣는 것을 보고, exec를 정책으로 막더라도 카드에서 명령은 보여야 한다고 판단했습니다.</p>
+          </div>
+        </div>
+        <div class="decision">
+          <div>
+            <h3>비밀값은 “보여 줄 필드만 고르는” 방식으로 가린다</h3>
+            <span class="src">계약 5장 4항 · server/mask.ts</span>
+          </div>
+          <div>
+            <p>가릴 값을 찾는 방식은 새 형식이 나오면 놓칩니다. 카드에는 도구별로 고른 필드만 싣고, 처리 과정에는 인자를 아예 보내지 않습니다. 모델이 답에 옮겨 적을 수 있는 토큰·키 형식은 한 번 더 가립니다.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="tag">Implementation</div>
+        <h2>화면과 백엔드</h2>
+      </div>
+
+      <div class="work">
+        <div class="work-item">
+          <div class="work-body">
+            <div class="kicker">스트림 이어붙이기</div>
+            <h3>승인을 기다리는 동안 Agent 연결은 끊지 않는다</h3>
+            <ul>
+              <li>Agent가 승인을 요청하면 브라우저로 가는 스트림은 승인 카드에서 끝내고, Agent 쪽 스트림은 백엔드가 열어 둔 채 기다립니다.</li>
+              <li>승인이나 거부가 오면 <code>/resume</code>으로 전달하고, 그 요청의 응답으로 Agent 스트림의 나머지를 이어서 보냅니다.</li>
+              <li>카드에는 위험도(되돌릴 수 없음, 잠깐 끊김, 새로 만듦), 승인하면 생기는 일, 접힌 기술 정보가 있습니다. 64자리 ID 대신 앞서 조회한 이름을 보여 줍니다.</li>
+            </ul>
+          </div>
+          <figure>
+            <div class="screen"><img src="img/approval.png" width="580" height="400" alt="승인 카드 확대. 처리 과정 줄, '컨테이너 nginx-web 삭제' 제목, '컨테이너와 그 안에서 바뀐 파일이 지워져요' 설명, 기술 정보 안의 DELETE /containers/nginx-web 요청."></div>
+            <figcaption>처리 과정 목록(도구 목록 불러옴 → 요청 이해함 → 승인 기다리는 중)과 승인 카드.</figcaption>
+          </figure>
+        </div>
+
+        <div class="work-item flip">
+          <div class="work-body">
+            <div class="kicker">승인과 차단은 다른 모양으로</div>
+            <h3>버튼이 있는 카드와 버튼이 없는 안내</h3>
+            <ul>
+              <li>정책이 “묻기”로 판정하면 버튼이 있는 승인 카드, “거부”로 판정하면 버튼 없는 차단 안내입니다. 차단은 승인해도 실행할 수 없는 작업이라 버튼을 두지 않습니다.</li>
+              <li>정책 차단은 Agent 스트림에 도구 오류로 섞여 옵니다. 오류 문구의 맨 앞만 맞춰 보고 차단을 가려냅니다. 도구 결과에는 컨테이너 이름이나 로그 같은 외부 문자열이 섞이기 때문입니다.</li>
+              <li>훅이 적은 사유의 첫 문장을 가린 뒤 보여 주고, 꼭 필요한 작업이면 Portainer 화면에서 직접 하라고 링크를 붙입니다.</li>
+            </ul>
+          </div>
+          <figure>
+            <div class="screen"><img src="img/blocked.png" width="580" height="515" alt="정책 차단 안내(빨강)와 그 아래 컨테이너 생성 승인 카드(파랑). 차단 안내는 '컨테이너 생성 body(설정)가 없습니다' 사유와 Portainer 열기 링크, 승인 카드는 이미지 nginx:alpine, 포트 8080→80/tcp."></div>
+            <figcaption>모델이 설정 없는 생성 요청을 두 번 보내 막힌 뒤(×2), 제대로 된 요청을 승인 대기에 올린 모습.</figcaption>
+          </figure>
+        </div>
+
+        <div class="work-item">
+          <div class="work-body">
+            <div class="kicker">대화별 동시 처리</div>
+            <h3>동시 처리를 열자 생긴 문제까지 막기</h3>
+            <ul>
+              <li>처음에는 백엔드 전체에서 Agent 스트림을 하나만 열었습니다. Agent 소스(<code>dispatcher.go</code>)에서 승인 요청이 세션마다 하나씩 온다는 것을 확인하고, v0.4.0에서 턴을 대화마다 나눴습니다(기본 3개 동시).</li>
+              <li>턴마다 브라우저로 보낸 이벤트를 모아 두어서, 처리 중에 새로고침해도 다시 붙어 처음부터 받습니다. 처리 중인 작업은 멈출 수 있습니다.</li>
+              <li>대화가 여럿이면 같은 컨테이너를 서로 다른 카드가 기다릴 수 있습니다. 한쪽이 먼저 지우고 같은 이름으로 새로 만들면, 나중 승인은 사용자가 본 것과 다른 대상을 바꿉니다. 같은 대상을 기다리는 카드에는 경고를 붙이고, 카드가 뜬 뒤 다른 대화가 같은 대상을 승인했으면 실행하지 않고 거부로 돌립니다(<code>TARGET_CHANGED</code>).</li>
+            </ul>
+          </div>
+          <figure>
+            <div class="screen"><img src="img/target-changed.png" width="560" height="210" alt="'대상이 바뀌어 실행 안 함: 컨테이너 nginx-web 삭제' 줄과 '다른 대화에서 같은 대상(nginx-web)을 먼저 바꿔서 이 승인은 실행하지 않았어요' 안내."></div>
+            <figcaption>다른 대화가 먼저 nginx-web을 바꿔서, 이 대화의 삭제 승인은 실행하지 않았습니다.</figcaption>
+          </figure>
+        </div>
+
+        <div class="work-item flip">
+          <div class="work-body">
+            <div class="kicker">정책은 Agent 설정 한 곳에</div>
+            <h3>정책은 웹에서 옮기고, 저장하면 Agent가 다시 뜬다</h3>
+            <ul>
+              <li>WEB은 세션을 만들 때 안전 모드를 보내지 않습니다. 그래야 agent.yaml에 적힌 정책이 그대로 적용됩니다.</li>
+              <li>설정의 정책 보드에서 작업을 허용·묻기·거부 세 칸 사이로 옮깁니다. 저장하면 agent.yaml의 permissions에 쓰고 Agent를 다시 띄웁니다. 변경 작업을 허용 칸으로 옮길 때는 한 번 더 확인을 받고, 허용 칸에서 실행된 변경도 감사 기록에 남깁니다.</li>
+              <li>그 밖에 대화 이름·고정·찾기·내보내기, 메시지 고쳐 다시 보내기, 승인 기록, 삭제 전 백업 목록, 토큰 사용량, 대화창에서 모델 고르기, API 키 상태와 남은 크레딧 보기가 있습니다.</li>
+            </ul>
+          </div>
+          <figure>
+            <div class="screen"><img src="img/policy.png" width="768" height="640" alt="설정 > 정책 화면. 위에 승인 방식(매번 묻기, 묻지 않기 YOLO), 아래에 허용 2·묻기 22·막기 3 세 칸의 정책 보드. 컨테이너 시작은 허용으로, 컨테이너 목록은 막기로 옮겨 '바뀜' 표시가 붙어 있고, 막기 칸의 두 항목은 자물쇠로 잠겨 있다."></div>
+            <figcaption>설정 &gt; 정책. 옮긴 작업에는 저장 전까지 “바뀜”이 붙습니다. 자물쇠가 달린 작업은 안전 검사 훅이 막는 것이라 옮길 수 없습니다.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="tag">November</div>
+        <h2>팀원이 혼자 설치해서 쓸 수 있게</h2>
+        <p class="muted" style="max-width:66ch">10월까지는 제 PC에서 Agent를 따로 띄워야 돌아갔습니다. 11월에는 처음 받는 사람이 설치부터 정책 변경까지 웹에서 끝낼 수 있게 만들었습니다.</p>
+      </div>
+      <div class="checks">
+        <div class="check">
+          <span class="tag">11.05 · WEB 0.6.0</span>
+          <h3>로그인 대신 이 PC에서만</h3>
+          <p>내 PC에서 여는 도구라 로그인을 없앴습니다. 대신 이 PC 주소로 들어온 요청만 받고, Host·Origin 헤더를 검사해 다른 사이트가 보내는 요청을 막습니다.</p>
+        </div>
+        <div class="check">
+          <span class="tag">11.05 – 11.07</span>
+          <h3>백엔드가 Agent를 띄우고 관리</h3>
+          <p>Agent가 죽으면 1·2·5·10·30초 간격으로 다시 띄우고, 2분에 5번 죽으면 멈춤으로 표시합니다. 끌 때는 Agent 아래 MCP 프로세스까지 트리 전체를 정리합니다.</p>
+        </div>
+        <div class="check">
+          <span class="tag">11.07 – 11.15 · WEB 0.7.0</span>
+          <h3>승인 모드와 스택 카드</h3>
+          <p>묻기 칸의 작업을 자동 승인하는 모드를 넣었습니다. 거부 칸과 안전 검사는 그대로 막고, BOSUN이 설명할 수 없는 도구는 이 모드에서도 묻습니다. Compose 스택 배포·수정도 카드로 보여 줍니다.</p>
+        </div>
+        <div class="check">
+          <span class="tag">11.12 – 11.14</span>
+          <h3>첫 실행 설정 페이지</h3>
+          <p>모델 API 키와 Portainer 키 두 개만 넣으면 시작합니다. 저장한 키는 앞자리와 끝 네 자리만 보여 주고, 연결이 안 되면 주소보다 Portainer가 켜져 있는지부터 묻습니다.</p>
+        </div>
+        <div class="check">
+          <span class="tag">11.12 – 11.15</span>
+          <h3>컨테이너 하나로 설치</h3>
+          <p>웹과 Agent를 한 이미지로 묶어 <code>docker compose up</code> 한 번으로 띄웁니다. Windows에서 받은 저장소로도 실행되는 것까지 확인했습니다.</p>
+        </div>
+        <div class="check">
+          <span class="tag">11.14 · WEB 0.9.0</span>
+          <h3>결과에서 Portainer로 바로</h3>
+          <p>작업 결과 옆에 Portainer의 해당 화면으로 가는 링크를 붙입니다. 링크 규칙은 Portainer 2.45.2에서 경우마다 직접 열어 보며 맞췄습니다.</p>
+        </div>
+      </div>
+
+      <div class="shots-3">
+        <figure>
+          <div class="screen"><img src="img/setup.png" width="512" height="795" alt="처음 설정 화면. OpenRouter API 키와 Portainer API 키 발급 방법, 키가 어떻게 전달되는지 설명, 키 입력 칸 두 개와 '확인하고 저장' 버튼."></div>
+          <figcaption>처음 설정. 키 두 개를 넣으면 먼저 맞는지 물어보고, 맞을 때만 저장하고 Agent를 다시 띄웁니다.</figcaption>
+        </figure>
+        <figure>
+          <div class="screen"><img src="img/stack.png" width="580" height="590" alt="'스택 shop 배포' 승인 카드. 서비스 web·db·cache, 포트 8081:80, 마운트, 환경변수 POSTGRES_PASSWORD(값은 숨김), 펼친 compose 파일."></div>
+          <figcaption>스택 카드. compose 파일에서 서비스·포트·마운트를 꺼내 보여 주고, 환경변수 값은 숨깁니다.</figcaption>
+        </figure>
+        <figure>
+          <div class="screen"><img src="img/yolo.png" width="560" height="240" alt="묻지 않기(YOLO) 모드에서 '자동 승인함: 컨테이너 web 재시작', '재시작 완료' 줄과 'Portainer에서 확인: 컨테이너 web' 링크."></div>
+          <figcaption>묻지 않기 모드. 카드 없이 실행해도 “자동 승인함”으로 남기고, 결과에 Portainer 링크를 붙입니다.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="tag">Findings</div>
+        <h2>실제로 붙여 보고 찾은 것</h2>
+      </div>
+
+      <div class="issues">
+        <article class="issue">
+          <h3>컨테이너 안의 Agent가 Portainer에 붙지 않았다 (11월 12–15일)</h3>
+          <dl>
+            <dt>증상</dt><dd>Portainer API가 계속 <code>303</code>을 돌려줬습니다.</dd>
+            <dt>첫 가설</dt><dd>HTTP 포트가 HTTPS로 넘긴다고 보고 내부 주소를 HTTPS로 바꿨지만 같은 303이 났습니다. 가설이 틀린 것을 확인하고 응답 헤더를 직접 봤습니다.</dd>
+            <dt>원인</dt><dd>헤더에 <code>Redirect-Reason: AdminInitTimeout</code>이 있었습니다. Portainer는 첫 실행 후 5분 안에 관리자 계정이 없으면 API를 막습니다. 이를 풀자 이번에는 빈 키로 인증 오류가 났는데, docker-agent 소스를 따라가 보니 환경변수의 빈 값도 “찾은 값”으로 쓰고 있었습니다.</dd>
+            <dt>해결</dt><dd>설치 안내에 5분 제한과 복구 방법을 적고, Agent를 띄울 때 빈 값을 지워 “값 없음”이 바로 드러나게 했습니다. Portainer는 사용자가 이미 쓰는 것에 붙이도록 설치 구성에서 뺐습니다.</dd>
+          </dl>
+        </article>
+
+        <article class="issue">
+          <h3>승인을 5분 기다리면 연결이 300초에 끊긴다</h3>
+          <dl>
+            <dt>증상</dt><dd>승인 대기나 오래 걸리는 도구 실행 중에 WEB 백엔드와 Agent 사이 연결이 끊겼고, Agent는 요청이 끊기면 실행을 취소했습니다.</dd>
+            <dt>원인</dt><dd>Node <code>fetch</code>(undici)는 응답 본문이 300초 동안 오지 않으면 연결을 끊습니다(<code>UND_ERR_BODY_TIMEOUT</code>). Agent는 승인을 기다리는 동안 keepalive를 보내지 않습니다. 10월 9일 실측으로 확인했습니다.</dd>
+            <dt>해결</dt><dd>Agent 스트림만 기본 타임아웃이 없는 <code>node:http</code>로 엽니다. 구간마다 “바깥 구간이 안쪽보다 길어야 한다”는 규칙으로 타임아웃 표를 만들었고, 리버스 프록시에 끊기지 않게 브라우저 쪽에는 15초마다 ping을 보냅니다.</dd>
+          </dl>
+        </article>
+
+        <article class="issue">
+          <h3>Agent가 조용히 멈추는 경우들</h3>
+          <dl>
+            <dt>반복 한도</dt><dd>반복 한도(<code>max_iterations</code>)에 닿으면 Agent는 계속할지 묻고 기다리는데, WEB에는 그 화면이 없습니다. 백엔드가 바로 거부를 보내 멈추게 했습니다.</dd>
+            <dt>대화 제목</dt><dd>제목이 없으면 Agent가 영어 프롬프트로 LLM을 한 번 더 불러 제목을 만들었고, 영어나 빈 제목이 나왔습니다. 첫 메시지로 WEB이 제목을 정해 그 호출을 없앴습니다.</dd>
+            <dt>훅 순서</dt><dd>v1.148.0 소스를 다시 읽어 훅이 모두 사용자 승인 전에 불린다는 것을 확인했습니다. 삭제 전 백업은 거부해도 남고, 백업 훅이 <code>allow</code>를 돌려주면 승인 카드 없이 바로 실행됩니다. Agent 담당 팀원에게 훅 위치와 반환값을 정리해 전달했습니다.</dd>
+          </dl>
+        </article>
+
+        <article class="issue">
+          <h3>실제 Portainer 연동에서 나온 정책 문제</h3>
+          <p class="muted">정책 훅은 Agent 담당 팀원의 코드입니다. 10월 11일과 13일 실제 연동에서 정책이 막아야 할 요청을 직접 보내 보고, 찾은 문제를 계약서에 적어 전달했습니다.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>문제</th><th>원인</th><th>상태</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>경로를 <code>arch%69ve</code>처럼 인코딩하면 파일 읽기 거부 규칙을 피함</td>
+                  <td>정책은 글자 그대로 비교하는데 Portainer는 <code>%XX</code>를 풀어서 처리</td>
+                  <td><span class="pill ok">반영됨</span><br>허용 목록 방식으로 바꾸고 <code>%</code>, <code>..</code> 등이 든 경로는 거부</td>
+                </tr>
+                <tr>
+                  <td>이미지 tar 내보내기(<code>GET /images/{name}/get</code>)가 승인 없이 실행됨</td>
+                  <td>거부 목록에 없는 경로는 통과</td>
+                  <td><span class="pill ok">반영됨</span><br>거부 규칙과 허용 목록 양쪽에서 거부</td>
+                </tr>
+                <tr>
+                  <td>Windows에서 한글 인젝션 차단 규칙이 동작하지 않음</td>
+                  <td>훅 Python이 입력을 CP949로 읽음</td>
+                  <td><span class="pill ok">반영됨</span><br><code>python -X utf8</code>로 실행</td>
+                </tr>
+                <tr>
+                  <td>막은 메시지가 대화 기록에 남아 다음 턴에 모델이 답함</td>
+                  <td>차단은 그 턴만 멈추고 기록은 그대로</td>
+                  <td><span class="pill ok">반영됨</span><br>모델에 보내기 전에 안내 문구로 바꾸는 훅 추가</td>
+                </tr>
+                <tr>
+                  <td><code>force=y</code>로 보내면 실행 중인 컨테이너가 강제 삭제됨</td>
+                  <td>Docker는 <code>""/0/no/false/none</code>만 거짓인데 훅은 <code>1/true/yes/on</code>만 참으로 봄</td>
+                  <td><span class="pill ok">반영됨</span><br>훅도 Docker처럼 빈 값·<code>0/no/false/none</code>만 거짓으로 봄. WEB 카드의 강제 삭제 표시도 Docker 기준</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="issue">
+          <h3>실제 Agent 리허설(10월 27~28일)</h3>
+          <dl>
+            <dt>상황</dt><dd>실제 docker-agent, Portainer, 모델로 v0.4.0 기능 전체를 써 봤습니다.</dd>
+            <dt>찾은 것</dt><dd>모델이 아무것도 내지 않고 끝나 화면이 멈춘 것처럼 보임. 모델이 도구 호출을 글로 써서 보냄. Agent가 같은 호출 반복을 감지해 멈춤. 생성 요청 본문이 빠져 두 번 막혔는데 화면에는 공통 문구만 나와 이유를 알 수 없음.</dd>
+            <dt>결과</dt><dd>WEB 0.5.0~0.5.2로 고쳤습니다. 세 경우를 각각 오류 코드와 다시 시도 안내로 나누고, 차단 안내에 사유와 Portainer 링크를 붙이고, 승인 카드에 위험도를 달았습니다. 같은 상황을 가짜 Agent 시나리오와 테스트에도 넣었습니다.</dd>
+          </dl>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="tag">Interface</div>
+        <h2>구조가 바뀌어도 화면은 버틴다</h2>
+      </div>
+      <div class="prose">
+        <p>처음 설계(계약 v0.2)는 Agent와 Portainer 사이에 승인 게이트웨이 Airlock을 두고, Airlock이 WEB에 webhook으로 승인을 요청하는 구조였습니다. 10월 8일 팀이 Airlock을 일단 빼고 Docker Agent 자체 승인을 쓰기로 정했고, 다음 날 계약 v0.3.0으로 바꿨습니다.</p>
+        <p>승인 요청이 오는 곳(webhook → Agent 스트림)과 결정을 보내는 곳(Airlock API → <code>/resume</code>)이 모두 바뀌었지만, 브라우저 ↔ WEB 백엔드 형식은 그대로 두었습니다. 화면은 <code>AgentClient</code> 인터페이스만 보도록 나눠 두었기 때문에, 그 커밋에서 화면 코드는 승인 뒤 단계 표시 몇 줄과 목업 조정만 바뀌었고, 나머지는 백엔드와 가짜 Agent였습니다.</p>
+        <p>계약서는 v0.1(9월 24일)부터 v0.5.3(10월 29일)까지 31개 버전을 냈습니다. 9월 28일 하루에만 원문과 다시 대조하며 v0.2부터 v0.2.7까지 여덟 판을 냈습니다. 팀원에게 묻기 전에 확인할 수 있는 것은 소스로 먼저 확인하고, 다른 파트의 결정이 필요한 일은 계약서 7장 한 곳에 누구에게 무엇이 필요한지와 함께 적습니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="tag">Verification</div>
+        <h2>다른 파트가 끝나기 전에도 끝까지 확인한다</h2>
+      </div>
+      <div class="checks">
+        <div class="check">
+          <strong>153</strong>
+          <h3>백엔드 흐름 테스트</h3>
+          <p>Agent 소스의 이벤트·차단 문구 모양을 따른 가짜 Docker Agent를 만들고, 승인·거부·만료·정책 거부·훅 차단·멈추기·대화 복원·승인 모드·키 저장까지 API로 확인합니다.</p>
+        </div>
+        <div class="check">
+          <strong>81</strong>
+          <h3>브라우저 화면 테스트</h3>
+          <p>실제 Chrome으로 승인, 새로고침 뒤 다시 붙기, 대상이 바뀐 승인, 설정 화면, 360px 화면의 가로 스크롤까지 눌러 봅니다. 이 페이지의 캡처도 이 테스트가 찍었습니다.</p>
+        </div>
+        <div class="check">
+          <strong>12</strong>
+          <h3>Agent 실행 관리 테스트</h3>
+          <p>가짜 Agent 실행 파일로 시작, 죽었을 때 다시 띄우기, API 키 저장 뒤 다시 시작, 남은 프로세스 정리를 확인합니다.</p>
+        </div>
+      </div>
+      <p class="muted" style="margin-top:18px;font-size:0.88rem">2026.11.15에 세 테스트를 모두 다시 실행해 전부 통과했습니다. 이 페이지의 캡처는 그 실행에서 찍었습니다. 가짜 Agent 테스트와 별도로 실제 docker-agent·Portainer·모델로 11월 7일 실행 관리를, 11월 15일 Windows에서 컨테이너 설치를 직접 확인했습니다.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="tag">Stack</div>
+        <h2>기술 선택과 이유</h2>
+      </div>
+      <div class="stack">
+        <div><b>React 19 + TypeScript + Vite</b><span>계속 바뀌는 메시지 상태를 컴포넌트로 나누고, 이벤트 형식을 타입으로 고정</span><span class="why">Next.js는 쓰지 않음. 내 PC에서 여는 관리 도구라 SEO·서버 렌더링이 필요 없음</span></div>
+        <div><b>Tailwind CSS v4</b><span>상태별로 조금씩 다른 작은 컴포넌트가 많음</span><span class="why">컴포넌트 라이브러리는 쓰지 않음. 핵심인 승인 카드가 이 프로젝트에만 있는 화면</span></div>
+        <div><b>SSE (POST + fetch)</b><span>응답은 서버에서 브라우저로 한 방향이고, Docker Agent도 SSE</span><span class="why">WebSocket은 쓰지 않음. 승인 버튼은 POST 한 번이면 됨</span></div>
+        <div><b>Node 22 + Hono + node:sqlite</b><span>화면과 이벤트 타입 파일을 같이 쓰고, Node가 타입만 지우고 바로 실행해 빌드 단계가 없음</span><span class="why">FastAPI는 쓰지 않음. 타입을 두 언어로 따로 맞춰야 함</span></div>
+        <div><b>채팅 템플릿 없이 직접 조립</b><span>승인(버튼 있음)과 차단(버튼 없음)의 분기가 핵심</span><span class="why">open-webui는 Docker Agent에 붙이는 방식에 대화 안 승인 통로가 없음</span></div>
+        <div><b>Docker 올인원 이미지</b><span>웹과 Agent를 한 이미지로 묶어 <code>docker compose up</code> 한 번으로 실행</span><span class="why">Portainer는 넣지 않음. 사용자가 이미 쓰는 Portainer에 붙이는 것이 실제 사용 흐름</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="tag">Log</div>
+        <h2>진행 기록</h2>
+      </div>
+      <ol class="timeline">
+        <li><time>2026.09.24</time><div><b>계약 v0.1, 채팅 화면과 목업.</b> 목업이 계약 형식대로 움직이게 해 화면부터 만듦</div></li>
+        <li><time>09.25</time><div><b>Docker Agent API 서버 조사.</b> 승인·세션·SSE 엔드포인트 정리</div></li>
+        <li><time>09.28</time><div><b>계약 v0.2.</b> Airlock 기준 승인 흐름, 만료·끊김·차단 판별 규칙</div></li>
+        <li><time>10.05</time><div><b>WEB 백엔드.</b> 가짜 Agent와 흐름 테스트, 카드·감사 기록 SQLite 저장</div></li>
+        <li><time>10.09</time><div><b>계약 v0.3.0.</b> Airlock을 빼고 Docker Agent 자체 승인으로 전환. 300초 끊김 해결</div></li>
+        <li><time>10.11</time><div><b>실제 Portainer 연동.</b> 생성 카드 내용, 이름 표시, 로그인. 정책 문제 발견</div></li>
+        <li><time>10.18</time><div><b>WEB 0.4.0.</b> 대화별 동시 처리, 멈추기, 다시 붙기, 설정 화면, Dockerfile, 화면 테스트</div></li>
+        <li><time>10.28</time><div><b>WEB 0.5.0~0.5.2.</b> 리허설에서 나온 문제 수정, 차단 사유와 Portainer 안내</div></li>
+        <li><time>10.29</time><div><b>계약 v0.5.3.</b> 대상이 바뀐 승인은 실행하지 않음</div></li>
+        <li><time>11.05</time><div><b>WEB 0.6.0.</b> 로그인 제거, 백엔드가 Agent를 띄우고 관리</div></li>
+        <li><time>11.07</time><div><b>WEB 0.7.0.</b> 승인 모드, 스택 카드, 실제 Agent 테스트. 팀 저장소에 공개</div></li>
+        <li><time>11.09</time><div><b>WEB 0.8.0.</b> Agent 파트와 연결, 디자인 정리</div></li>
+        <li><time>11.12</time><div><b>컨테이너 설치.</b> 웹·Agent 올인원 이미지, 첫 실행 설정 페이지. Portainer 303 원인 확인</div></li>
+        <li><time>11.14</time><div><b>정책 보드.</b> 허용·묻기·거부를 웹에서 옮기고 저장. 대화창 모델 선택, Portainer 링크</div></li>
+        <li><time>11.15</time><div><b>WEB 0.9.0.</b> 설정 화면 정리, Windows에서 컨테이너 설치 확인</div></li>
+        <li class="next"><time>11.27</time><div><b>최종 발표.</b></div></li>
+      </ol>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">BOSUN 캡스톤 프로젝트 · WEB 김진영 · 2026.11.15 기준 · 코드: <a href="https://github.com/bosun-agent/bosun-agent">github.com/bosun-agent/bosun-agent</a></div>
+</footer>
+
+</body></html>
+</body>
+</html>
